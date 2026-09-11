@@ -7,11 +7,41 @@ function updateCounts() {
   });
 }
 
-function createCard(title) {
+function todayStart() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+function formatDueLabel(isoDate) {
+  const [year, month, day] = isoDate.split("-");
+  return `${Number(year)}/${Number(month)}/${Number(day)}`;
+}
+
+function isDueUrgent(isoDate) {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  const due = new Date(year, month - 1, day);
+  return due <= todayStart();
+}
+
+function createCard(title, dueDate = "") {
   const card = document.createElement("article");
   card.className = "card";
   card.draggable = true;
-  card.textContent = title;
+
+  const titleEl = document.createElement("span");
+  titleEl.className = "card-title";
+  titleEl.textContent = title;
+  card.append(titleEl);
+
+  if (dueDate) {
+    const dueEl = document.createElement("span");
+    dueEl.className = "due-label";
+    dueEl.textContent = formatDueLabel(dueDate);
+    if (isDueUrgent(dueDate)) {
+      dueEl.classList.add("is-urgent");
+    }
+    card.append(dueEl);
+  }
 
   card.addEventListener("dragstart", (event) => {
     event.dataTransfer.setData("text/plain", title);
@@ -33,12 +63,14 @@ board.querySelectorAll("[data-add]").forEach((form) => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const input = form.querySelector("input[name=title]");
+    const dueInput = form.querySelector("input[name=due]");
     const title = input.value.trim();
     if (!title) return;
 
     const list = form.closest(".column").querySelector("[data-cards]");
-    list.append(createCard(title));
+    list.append(createCard(title, dueInput.value));
     input.value = "";
+    dueInput.value = "";
     updateCounts();
   });
 });

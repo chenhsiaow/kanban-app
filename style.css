@@ -101,11 +101,33 @@ body {
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
   background: var(--surface-2);
   border-radius: 8px;
   padding: 0.75rem;
   cursor: grab;
   box-shadow: 0 6px 16px rgb(0 0 0 / 18%);
+}
+
+.card-title {
+  word-break: break-word;
+}
+
+.due-label {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.12rem 0.5rem;
+  font-size: 0.75rem;
+  background: #314056;
+  color: var(--muted);
+}
+
+.due-label.is-urgent {
+  background: #5a1f28;
+  color: #ff6b7a;
 }
 
 .card:active {
@@ -114,17 +136,26 @@ body {
 
 .add-card {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.4rem;
   margin-top: 0.85rem;
 }
 
 .add-card input {
-  flex: 1;
   border: 1px solid #33485f;
   background: #15202c;
   color: var(--text);
   border-radius: 8px;
   padding: 0.5rem 0.65rem;
+}
+
+.add-card input[name="title"] {
+  flex: 1 1 7rem;
+}
+
+.add-card input[name="due"] {
+  flex: 0 0 auto;
+  color-scheme: dark;
 }
 
 .add-card button {
